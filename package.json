@@ -1,0 +1,45 @@
+{
+  "name": "handwriting",
+  "version": "0.0.0",
+  "description": "A collection of handwritten implementation APIs",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "export": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "unbuild --stub",
+    "build": "unbuild",
+    "test": "vitest"
+  },
+  "author": {
+    "name": "alwynou",
+    "email": "alwynou@163.com",
+    "url": "https://github.com/alwynou"
+  },
+  "keywords": [
+    "handwriting"
+  ],
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/alwynou/handwriting#readme",
+  "bugs": "https://github.com/alwynou/handwriting/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alwynou/handwriting"
+  },
+  "devDependencies": {
+    "@alwynou/eslint-config": "^0.27.0",
+    "eslint": "^8.24.0",
+    "unbuild": "^0.8.11",
+    "vitest": "^0.23.4"
+  },
+  "license": "MIT"
+}

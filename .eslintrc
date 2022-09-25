@@ -1,0 +1,6 @@
+{
+  "extends": "@alwynou",
+  "rules": {
+    "no-console": "off"
+  }
+}
