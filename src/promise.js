@@ -1,9 +1,9 @@
 // 基础Promise 不处理所有情况
 function PromiseImpl(executor) {
-  this.resolveCallbacks = []
-  this.rejectCallBacks = []
-  this.state = 0 // -1 | 0 | 1
-  this.result = null
+  this._resolveCallbacks = []
+  this._rejectCallbacks = []
+  this._status = 0 // -1 | 0 | 1
+  this._value = null
   try {
     executor(resolver.bind(this), rejector.bind(this))
   }
@@ -59,26 +59,26 @@ PromiseImpl.race = function (promises) {
 function then(resolveCallback, rejectCallBack) {
   const innerPromise = new PromiseImpl((resolve, reject) => {
     nextTick(() => {
-      switch (this.state) {
+      switch (this._status) {
         case 0: { // padding
           if (resolveCallback) {
-            this.resolveCallbacks.push(() => nextTick(() => {
-              innerExector(resolveCallback, this.result, innerPromise, resolve, reject)
+            this._resolveCallbacks.push(() => nextTick(() => {
+              innerExector(resolveCallback, this._value, innerPromise, resolve, reject)
             }))
           }
           if (rejectCallBack) {
-            this.rejectCallBacks.push(() => nextTick(() => {
-              innerExector(rejectCallBack, this.result, innerPromise, resolve, reject, true)
+            this._rejectCallbacks.push(() => nextTick(() => {
+              innerExector(rejectCallBack, this._value, innerPromise, resolve, reject, true)
             }))
           }
           break
         }
         case 1: { // fullfill
-          innerExector(resolveCallback, this.result, innerPromise, resolve, reject)
+          innerExector(resolveCallback, this._value, innerPromise, resolve, reject)
           break
         }
         case -1: { // rejected
-          innerExector(rejectCallBack, this.result, innerPromise, resolve, reject, true)
+          innerExector(rejectCallBack, this._value, innerPromise, resolve, reject, true)
           break
         }
       }
@@ -96,19 +96,19 @@ function finallyFn(fn) {
 }
 
 function resolver(ret) {
-  if (this.state !== 0) return
-  this.state = 1
-  this.result = ret
-  this.resolveCallbacks.forEach((fn) => {
+  if (this._status !== 0) return
+  this._status = 1
+  this._value = ret
+  this._resolveCallbacks.forEach((fn) => {
     fn(ret)
   })
 }
 
 function rejector(err) {
-  if (this.state !== 0) return
-  this.state = -1
-  this.result = err
-  this.rejectCallBacks.forEach((fn) => {
+  if (this._status !== 0) return
+  this._status = -1
+  this._value = err
+  this._rejectCallbacks.forEach((fn) => {
     fn(err)
   })
 }
